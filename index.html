@@ -1,30 +1,375 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Matreo" />
-    <meta name="theme-color" content="#8B5E3C" />
-    <meta name="description" content="Your family's chief of staff. Built for moms." />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
-    <title>Matreo — Your Family's Chief of Staff</title>
-    <style>
-      * { -webkit-tap-highlight-color: transparent; }
-      body { margin: 0; overscroll-behavior: none; }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js');
-        });
-      }
-    </script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Matreo">
+<meta name="theme-color" content="#8B5E3C">
+<title>Matreo — Your Family's Chief of Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(160deg,#FDF0E4,#F5E6D8,#EDD8C8);min-height:100vh;overscroll-behavior:none}
+.hidden{display:none!important}
+.ob-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.ob-card{background:white;border-radius:28px;padding:32px 24px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(61,43,31,0.12)}
+.ob-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#3D2B1F;text-align:center;margin-bottom:8px}
+.ob-logo span{color:#C4714A;font-style:italic}
+.ob-progress{display:flex;gap:5px;justify-content:center;margin:14px 0 24px}
+.ob-dot{height:4px;border-radius:10px;background:#E8D0B8;width:12px;transition:all 0.3s}
+.ob-dot.active{background:#C4714A;width:24px}
+.ob-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:#3D2B1F;margin-bottom:8px;line-height:1.3}
+.ob-sub{font-size:14px;color:#9A7B6A;margin-bottom:20px;line-height:1.7;font-weight:300}
+.ob-label{font-size:10px;color:#9A7B6A;font-weight:700;letter-spacing:1px;display:block;margin-bottom:8px}
+.ob-input{width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid #E8D0B8;font-size:15px;color:#3D2B1F;font-family:'DM Sans',sans-serif;outline:none}
+.ob-btn{width:100%;background:#C4714A;color:white;border:none;border-radius:100px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:18px}
+.ob-btn-back{width:100%;background:#F0E4D4;color:#7A5C44;border:none;border-radius:100px;padding:11px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px}
+.ob-opt{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border-radius:14px;border:1.5px solid #E8D0B8;background:white;cursor:pointer;margin-bottom:9px;transition:all 0.2s}
+.ob-opt.selected{border-color:#C4714A;background:#FDF0E8}
+.ob-opt-title{font-size:14px;font-weight:600;color:#3D2B1F;margin-bottom:2px}
+.ob-opt-sub{font-size:12px;color:#9A7B6A}
+.ob-days{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.ob-day{padding:7px 11px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid #E8D0B8;background:white;color:#9A7B6A;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.ob-day.selected{background:#C4714A;color:white;border-color:#C4714A}
+.ob-row{display:flex;gap:10px;margin-bottom:8px}
+.ob-select{flex:1;padding:10px 14px;border-radius:12px;border:1.5px solid #E8D0B8;font-size:14px;color:#3D2B1F;font-family:'DM Sans',sans-serif;background:white}
+.ob-pocket-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.ob-pocket{padding:12px 8px;border-radius:14px;border:1.5px solid #E8D0B8;background:white;cursor:pointer;text-align:center;transition:all 0.2s}
+.ob-pocket.selected{border-color:#C4714A;background:#FDF0E8}
+.ob-note{background:#F5EDE6;border-radius:12px;padding:12px 14px;font-size:12px;color:#9A7B6A;line-height:1.6;margin-top:16px}
+.app-header{background:linear-gradient(135deg,#8B5E3C,#A67C5B);padding:28px 20px 20px;color:white;border-radius:0 0 28px 28px;box-shadow:0 8px 30px rgba(100,70,50,0.25)}
+.app-stats{display:flex;gap:8px;margin-bottom:12px}
+.app-stat{border-radius:10px;padding:8px 10px;text-align:center;flex:1}
+.app-tabs{display:flex;gap:6px}
+.app-tab{flex:1;padding:8px;border-radius:20px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.app-body{max-width:600px;margin:0 auto;padding:14px 16px 80px}
+.focus-card{background:linear-gradient(135deg,#3D2B1F,#5A3D2A);border-radius:24px;overflow:hidden;margin-bottom:14px;box-shadow:0 8px 40px rgba(61,43,31,0.25)}
+.focus-header{padding:18px 20px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start}
+.focus-item{background:rgba(255,255,255,0.07);border-radius:14px;padding:13px 14px;margin-bottom:7px;border:1px solid rgba(255,255,255,0.1)}
+.pocket-section{margin:0 14px 14px;background:rgba(255,255,255,0.05);border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,0.08)}
+.task-card{background:white;border-radius:16px;padding:14px 16px;margin-bottom:8px;box-shadow:0 2px 10px rgba(100,70,50,0.06);cursor:pointer}
+.filters{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;margin-bottom:10px}
+.filter-btn{white-space:nowrap;padding:6px 13px;border-radius:20px;font-size:12px;border:1.5px solid #E0C8B0;background:white;color:#7A5C44;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.filter-btn.active{background:#8B5E3C;color:white;border-color:#8B5E3C}
+.add-plate-btn{width:100%;margin-top:12px;padding:14px;background:white;border:2px dashed #D4B090;border-radius:16px;font-size:14px;color:#9A7B6A;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600}
+.modal-overlay{position:fixed;inset:0;background:rgba(80,60,50,0.4);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal-card{background:#FDF6EE;border-radius:24px;max-width:480px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(100,70,50,0.25);max-height:90vh;overflow-y:auto}
+</style>
+</head>
+<body>
+
+<div id="screen-ob"><div class="ob-screen"><div class="ob-card">
+  <div class="ob-logo">Matr<span>eo</span> 🌸</div>
+  <div style="font-size:11px;color:#C4A882;text-align:center;margin-bottom:14px">Your family's chief of staff</div>
+  <div class="ob-progress"><div class="ob-dot active" id="d1"></div><div class="ob-dot" id="d2"></div><div class="ob-dot" id="d3"></div><div class="ob-dot" id="d4"></div></div>
+
+  <div id="s1">
+    <div class="ob-title">Hi! What should Matreo call you?</div>
+    <div class="ob-sub">Set this up once. Matreo learns your life and personalizes everything — so it fits <em>you</em>.</div>
+    <label class="ob-label">YOUR FIRST NAME</label>
+    <input class="ob-input" id="ob-name" placeholder="e.g. Lydia" />
+    <div class="ob-note">🔒 Matreo only connects to apps you approve. Your data stays yours.</div>
+    <button class="ob-btn" onclick="n(1)">Let's set you up →</button>
+  </div>
+
+  <div id="s2" class="hidden">
+    <div class="ob-title">How does your work life look?</div>
+    <div class="ob-sub">Tell Matreo about your schedule so it only suggests time pockets that are <em>actually</em> yours.</div>
+    <div class="ob-opt" onclick="sw('office')" id="wo"><span style="font-size:22px">🏢</span><div><div class="ob-opt-title">I go into the office</div><div class="ob-opt-sub">Set days, set hours — commute counts too</div></div></div>
+    <div class="ob-opt" onclick="sw('remote')" id="wr"><span style="font-size:22px">💻</span><div><div class="ob-opt-title">I work fully from home</div><div class="ob-opt-sub">No commute, but I have real work hours</div></div></div>
+    <div class="ob-opt" onclick="sw('hybrid')" id="wh"><span style="font-size:22px">🔀</span><div><div class="ob-opt-title">Hybrid — some office, some home</div><div class="ob-opt-sub">My schedule changes by day</div></div></div>
+    <div class="ob-opt" onclick="sw('flexible')" id="wf"><span style="font-size:22px">⏰</span><div><div class="ob-opt-title">My hours are flexible</div><div class="ob-opt-sub">I control when I work — no fixed schedule</div></div></div>
+    <div class="ob-opt" onclick="sw('sahm')" id="ws"><span style="font-size:22px">🌸</span><div><div class="ob-opt-title">I'm not working outside the home</div><div class="ob-opt-sub">Stay-at-home mom, or between jobs right now</div></div></div>
+    <div id="wd" class="hidden" style="margin-top:14px">
+      <label class="ob-label">WHICH DAYS DO YOU WORK?</label>
+      <div class="ob-days"><div class="ob-day selected" onclick="td(this,'Mon')">Mon</div><div class="ob-day selected" onclick="td(this,'Tue')">Tue</div><div class="ob-day selected" onclick="td(this,'Wed')">Wed</div><div class="ob-day selected" onclick="td(this,'Thu')">Thu</div><div class="ob-day selected" onclick="td(this,'Fri')">Fri</div><div class="ob-day" onclick="td(this,'Sat')">Sat</div><div class="ob-day" onclick="td(this,'Sun')">Sun</div></div>
+      <div id="wh2" class="hidden"><label class="ob-label">TYPICAL WORK HOURS</label><div class="ob-row"><div style="flex:1"><div style="font-size:10px;color:#B89070;margin-bottom:4px">START</div><select class="ob-select" id="ws2"></select></div><div style="flex:1"><div style="font-size:10px;color:#B89070;margin-bottom:4px">END</div><select class="ob-select" id="we2"></select></div></div></div>
+    </div>
+    <button class="ob-btn" onclick="n(2)" style="margin-top:14px">Continue →</button>
+    <button class="ob-btn-back" onclick="b(1)">← Back</button>
+  </div>
+
+  <div id="s3" class="hidden">
+    <div class="ob-title">Do you have a commute?</div>
+    <div class="ob-sub">Matreo factors commute time into your day so suggestions actually make sense.</div>
+    <div class="ob-opt" onclick="sc(false)" id="cn"><span style="font-size:22px">🏠</span><div><div class="ob-opt-title">No commute — I work from home</div><div class="ob-opt-sub">My work hours start right at home</div></div></div>
+    <div class="ob-opt" onclick="sc(true)" id="cy"><span style="font-size:22px">🚗</span><div><div class="ob-opt-title">Yes, I commute to work</div><div class="ob-opt-sub">Train, car, bus — time away from home</div></div></div>
+    <div id="ct" class="hidden" style="margin-top:14px"><label class="ob-label">HOW LONG IS YOUR COMMUTE? (ONE WAY)</label><select class="ob-select" id="cm"><option value="10">10 min</option><option value="15">15 min</option><option value="20">20 min</option><option value="30" selected>30 min</option><option value="45">45 min</option><option value="60">60 min</option><option value="90">90 min</option></select></div>
+    <button class="ob-btn" onclick="n(3)">Continue →</button>
+    <button class="ob-btn-back" onclick="b(2)">← Back</button>
+  </div>
+
+  <div id="s4" class="hidden">
+    <div class="ob-title">When do you want Matreo to find time for you?</div>
+    <div class="ob-sub">Pick windows that feel like <em>your</em> time. No scores, no guilt.</div>
+    <div class="ob-pocket-grid">
+      <div class="ob-pocket" onclick="tp(this,'morning')"><div style="font-size:22px;margin-bottom:4px">🌅</div><div style="font-size:12px;font-weight:600;color:#3D2B1F">Mornings</div><div style="font-size:10px;color:#9A7B6A;margin-top:2px">Before work or drop-off</div></div>
+      <div class="ob-pocket" onclick="tp(this,'lunch')"><div style="font-size:22px;margin-bottom:4px">🥗</div><div style="font-size:12px;font-weight:600;color:#3D2B1F">Lunch break</div><div style="font-size:10px;color:#9A7B6A;margin-top:2px">Mid-day breather</div></div>
+      <div class="ob-pocket" onclick="tp(this,'commute')"><div style="font-size:22px;margin-bottom:4px">🚆</div><div style="font-size:12px;font-weight:600;color:#3D2B1F">Commute time</div><div style="font-size:10px;color:#9A7B6A;margin-top:2px">On the train or in the car</div></div>
+      <div class="ob-pocket" onclick="tp(this,'after')"><div style="font-size:22px;margin-bottom:4px">🌇</div><div style="font-size:12px;font-weight:600;color:#3D2B1F">After work</div><div style="font-size:10px;color:#9A7B6A;margin-top:2px">After pickup, before dinner</div></div>
+      <div class="ob-pocket" onclick="tp(this,'evening')"><div style="font-size:22px;margin-bottom:4px">🌙</div><div style="font-size:12px;font-weight:600;color:#3D2B1F">Evening</div><div style="font-size:10px;color:#9A7B6A;margin-top:2px">After kids are in bed</div></div>
+      <div class="ob-pocket" onclick="tp(this,'weekend')"><div style="font-size:22px;margin-bottom:4px">☀️</div><div style="font-size:12px;font-weight:600;color:#3D2B1F">Weekends</div><div style="font-size:10px;color:#9A7B6A;margin-top:2px">Saturday or Sunday</div></div>
+    </div>
+    <div style="background:#FDF6EE;border-radius:12px;padding:14px;font-size:13px;color:#7A5C44;line-height:1.6">🌸 <strong>Matreo never judges.</strong> These are just suggestions — you always choose.</div>
+    <button class="ob-btn" onclick="n(4)">I'm ready — set up Matreo 🌸</button>
+    <button class="ob-btn-back" onclick="b(3)">← Back</button>
+  </div>
+</div></div></div>
+
+<div id="screen-app" class="hidden">
+  <div class="app-header">
+    <div style="max-width:600px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div><div style="font-size:10px;letter-spacing:3px;opacity:0.6;font-weight:700;margin-bottom:3px">MATREO</div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700">Hi <span id="uname"></span> 🌸</div><div style="font-size:11px;opacity:0.65;margin-top:2px" id="udate"></div></div>
+        <div><button style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:7px 14px;color:white;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600" onclick="showAdd()">+ Add</button><br><button style="background:transparent;border:none;color:rgba(255,255,255,0.35);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:6px" onclick="resetApp()">⚙ settings</button></div>
+      </div>
+      <div class="app-stats">
+        <div class="app-stat" style="background:rgba(255,255,255,0.15)"><div style="font-size:18px;font-weight:700" id="st1">0</div><div style="font-size:9px;opacity:0.7;font-weight:700">OPEN</div></div>
+        <div class="app-stat" id="st2box" style="background:rgba(255,255,255,0.15)"><div style="font-size:18px;font-weight:700" id="st2">0</div><div style="font-size:9px;opacity:0.7;font-weight:700">URGENT</div></div>
+        <div class="app-stat" style="background:rgba(100,180,100,0.3)"><div style="font-size:18px;font-weight:700" id="st3">0</div><div style="font-size:9px;opacity:0.7;font-weight:700">CALENDAR</div></div>
+        <div class="app-stat" style="background:rgba(255,255,255,0.12)"><div style="font-size:18px;font-weight:700" id="st4">0</div><div style="font-size:9px;opacity:0.7;font-weight:700">DONE</div></div>
+      </div>
+      <div class="app-tabs">
+        <button class="app-tab" id="tab1" onclick="view('today')" style="background:white;color:#8B5E3C">✦ Today's Focus</button>
+        <button class="app-tab" id="tab2" onclick="view('all')" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8)">All Tasks</button>
+      </div>
+    </div>
+  </div>
+  <div class="app-body">
+    <div style="display:flex;gap:12px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:#7DAA7D"></div><span style="font-size:10px;color:#7DAA7D;font-weight:700">GMAIL</span></div>
+      <div style="display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:#7DAA7D"></div><span style="font-size:10px;color:#7DAA7D;font-weight:700">GOOGLE CALENDAR</span></div>
+    </div>
+    <div id="v-today">
+      <div class="focus-card">
+        <div class="focus-header" onclick="tf()">
+          <div><div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.5);font-weight:700;margin-bottom:4px">✦ TODAY'S FOCUS</div><div style="font-family:'Playfair Display',serif;font-size:14px;color:white;font-style:italic;line-height:1.4;max-width:280px" id="fg">Building your daily brief...</div></div>
+          <div style="color:rgba(255,255,255,0.4);font-size:16px;margin-top:2px" id="fta">▲</div>
+        </div>
+        <div id="fb">
+          <div style="padding:16px 20px 24px;display:flex;align-items:center;gap:12px" id="fl"><div style="font-size:22px">🌅</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">Thinking about your day...</div></div>
+          <div id="fi" class="hidden" style="padding:0 14px 6px"></div>
+          <div id="fp" class="hidden"></div>
+          <div id="fa" class="hidden"></div>
+        </div>
+      </div>
+    </div>
+    <div id="v-all" class="hidden">
+      <div class="filters" id="frow"></div>
+      <div id="tlist"></div>
+      <div class="hidden" id="emp" style="text-align:center;padding:48px 24px;color:#B89070"><div style="font-size:30px;margin-bottom:10px">🌿</div><div style="font-family:'Playfair Display',serif;font-size:16px">Nothing here.</div></div>
+    </div>
+    <button class="add-plate-btn" onclick="showAdd()">+ Add something to your plate</button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="add-modal">
+  <div class="modal-card">
+    <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#3D2B1F;margin-bottom:18px">Add to your plate</div>
+    <label style="font-size:10px;color:#9A7B6A;font-weight:700;display:block;margin-bottom:4px">WHAT NEEDS TO HAPPEN?</label>
+    <input style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #E8D0B8;background:white;font-size:14px;color:#3D2B1F;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:12px;outline:none" id="nt" placeholder="e.g. Buy birthday gift for Emma's party" />
+    <label style="font-size:10px;color:#9A7B6A;font-weight:700;display:block;margin-bottom:4px">DEADLINE (OPTIONAL)</label>
+    <input type="date" style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #E8D0B8;background:white;font-size:14px;color:#3D2B1F;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:12px" id="nd" />
+    <label style="font-size:10px;color:#9A7B6A;font-weight:700;display:block;margin-bottom:4px">NOTES (OPTIONAL)</label>
+    <input style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #E8D0B8;background:white;font-size:14px;color:#3D2B1F;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:12px;outline:none" id="nn" placeholder="Any details..." />
+    <label style="font-size:10px;color:#9A7B6A;font-weight:700;display:block;margin-bottom:4px">CATEGORY</label>
+    <select style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #E8D0B8;background:white;font-size:14px;color:#3D2B1F;font-family:'DM Sans',sans-serif;box-sizing:border-box;margin-bottom:12px" id="nc">
+      <option value="insurance">🏥 Insurance & Medical Bills</option>
+      <option value="appointments">📅 Appointments</option>
+      <option value="school">🎒 School & Kids</option>
+      <option value="household">🏠 Household</option>
+      <option value="admin" selected>📋 Admin & Paperwork</option>
+      <option value="selfcare">🌸 Self Care</option>
+    </select>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#7A5C44;margin-bottom:18px;cursor:pointer"><input type="checkbox" id="nu"> Mark as urgent</label>
+    <div style="display:flex;gap:10px">
+      <button style="flex:1;background:#C4956A;color:white;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="saveT()">Add It</button>
+      <button style="flex:1;background:#F0E4D4;color:#7A5C44;border:none;border-radius:12px;padding:13px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="hideAdd()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="draft-modal">
+  <div class="modal-card">
+    <div style="font-size:12px;color:#B89070;margin-bottom:6px">✨ AI Draft for</div>
+    <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#4A3728;margin-bottom:18px" id="dt"></div>
+    <div id="dl" style="text-align:center;padding:36px 0;color:#C4956A"><div style="font-size:28px;margin-bottom:10px">✍️</div><div style="font-size:14px;font-family:'DM Sans',sans-serif">Drafting for you...</div></div>
+    <textarea id="dc" class="hidden" style="width:100%;min-height:180px;background:#FFF8F0;border:1.5px solid #E8D0B8;border-radius:12px;padding:14px;font-size:14px;line-height:1.7;color:#4A3728;resize:vertical;font-family:'DM Sans',sans-serif;box-sizing:border-box"></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button id="dcb" style="flex:1;background:#C4956A;color:white;border:none;border-radius:12px;padding:12px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600" onclick="copyD()">Copy to Clipboard</button>
+      <button style="flex:1;background:#F0E4D4;color:#7A5C44;border:none;border-radius:12px;padding:12px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="hideDraft()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS={insurance:{l:"Insurance & Medical Bills",e:"🏥",c:"#E8A598"},appointments:{l:"Appointments",e:"📅",c:"#A8C5A0"},school:{l:"School & Kids",e:"🎒",c:"#B8A9D4"},household:{l:"Household",e:"🏠",c:"#F0C080"},admin:{l:"Admin & Paperwork",e:"📋",c:"#98BED4"},selfcare:{l:"Self Care",e:"🌸",c:"#D4A8B8"}};
+const STC={todo:"#C9A882",inprogress:"#7BA7BC",waiting:"#B8956A",done:"#7DAA7D"};
+const STL={todo:"To Do",inprogress:"In Progress",waiting:"Waiting on Them",done:"Done ✓"};
+const AICONS={email:"📧",call:"📞",errand:"🛍️",payment:"💳",appointment:"🩺",school:"🎒",self:"🌸"};
+const HRS=Array.from({length:24},(_,i)=>{const h=i%12||12;const a=i<12?"AM":"PM";return{v:i,l:`${h}:00 ${a}`}});
+
+let tasks=[
+  {id:1,cat:"insurance",st:"waiting",title:"Son's school injury insurance claim",notes:"Insurance not responding. File DFS complaint at dfs.ny.gov.",dl:"2026-04-25",urg:true,cal:false},
+  {id:2,cat:"school",st:"inprogress",title:"School paperwork — injury incident",notes:"Contact principal + school legal/risk management in writing.",dl:"2026-04-22",urg:true,cal:false},
+  {id:3,cat:"household",st:"todo",title:"Pay water bill",notes:"",dl:"2026-04-30",urg:false,cal:false},
+  {id:4,cat:"admin",st:"todo",title:"Follow up on taxes application",notes:"",dl:"",urg:false,cal:false},
+  {id:5,cat:"appointments",st:"todo",title:"Schedule Sophia's ortho appointment",notes:"GHI insurance. Need ortho near Bethpage.",dl:"",urg:false,cal:false},
+  {id:6,cat:"appointments",st:"todo",title:"Schedule kids' annual physicals",notes:"Both kids overdue.",dl:"",urg:false,cal:false},
+  {id:7,cat:"selfcare",st:"todo",title:"Schedule my endocrinologist appointment",notes:"GHI insurance. Check providers near Bethpage.",dl:"",urg:false,cal:false},
+  {id:8,cat:"school",st:"todo",title:"Sophia's Girl Scouts meeting",notes:"Remember to bring cookie money.",dl:"2026-04-23",urg:false,cal:true,cd:"Apr 23",ct:"4:00 PM"},
+  {id:9,cat:"school",st:"todo",title:"School Book Fair",notes:"Starts Monday. Suggested donation: $20.",dl:"2026-04-22",urg:false,cal:true,cd:"Apr 22",ct:"All day"},
+];
+
+let prof={},nid=10,cv="today",cf="all",exp=new Set(),fc=false,wst='',wdays=['Mon','Tue','Wed','Thu','Fri'],ptimes=[],hcom=null;
+
+window.onload=()=>{
+  HRS.forEach(h=>{
+    document.getElementById('ws2').innerHTML+=`<option value="${h.v}"${h.v===9?' selected':''}>${h.l}</option>`;
+    document.getElementById('we2').innerHTML+=`<option value="${h.v}"${h.v===17?' selected':''}>${h.l}</option>`;
+  });
+  try{const s=localStorage.getItem('mp');if(s){prof=JSON.parse(s);startApp();}}catch(e){}
+};
+
+function dots(s){for(let i=1;i<=4;i++){const d=document.getElementById('d'+i);d.className='ob-dot'+(i<=s?' active':'');}}
+function hs(id){document.getElementById(id).classList.add('hidden');}
+function sh(id){document.getElementById(id).classList.remove('hidden');}
+
+function sw(s){wst=s;document.querySelectorAll('.ob-opt').forEach(o=>o.classList.remove('selected'));document.getElementById('w'+s[0]).classList.add('selected');if(s==='sahm'){hs('wd');}else{sh('wd');if(s==='flexible')hs('wh2');else sh('wh2');}}
+function td(el,d){el.classList.toggle('selected');if(el.classList.contains('selected'))wdays.push(d);else wdays=wdays.filter(x=>x!==d);}
+function sc(v){hcom=v;document.getElementById('cy').classList.toggle('selected',v);document.getElementById('cn').classList.toggle('selected',!v);v?sh('ct'):hs('ct');}
+function tp(el,p){el.classList.toggle('selected');if(el.classList.contains('selected'))ptimes.push(p);else ptimes=ptimes.filter(x=>x!==p);}
+
+function n(step){
+  if(step===1){const nm=document.getElementById('ob-name').value.trim();if(!nm){alert('Please enter your name!');return;}prof.name=nm;hs('s1');sh('s2');dots(2);}
+  else if(step===2){if(!wst){alert('Please select your work situation!');return;}prof.wst=wst;prof.wdays=wdays;prof.ws=parseInt(document.getElementById('ws2').value);prof.we=parseInt(document.getElementById('we2').value);hs('s2');if(wst==='remote'||wst==='sahm'){prof.hcom=false;sh('s4');dots(4);}else{sh('s3');dots(3);}}
+  else if(step===3){if(hcom===null){alert('Please select your commute situation!');return;}prof.hcom=hcom;prof.cmin=parseInt(document.getElementById('cm').value);hs('s3');sh('s4');dots(4);}
+  else if(step===4){if(ptimes.length===0){alert('Please select at least one time window!');return;}prof.ptimes=ptimes;try{localStorage.setItem('mp',JSON.stringify(prof));}catch(e){}hs('screen-ob');startApp();}
+}
+function b(s){for(let i=1;i<=4;i++)try{hs('s'+i);}catch(e){}sh('s'+s);dots(s);}
+
+function startApp(){
+  sh('screen-app');
+  document.getElementById('uname').textContent=prof.name||'Mom';
+  document.getElementById('udate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  updStats();buildFilters();genBrief();
+}
+
+function resetApp(){if(confirm('Reset your Matreo profile?')){try{localStorage.removeItem('mp');}catch(e){}location.reload();}}
+
+function updStats(){
+  const op=tasks.filter(t=>t.st!=='done').length,ur=tasks.filter(t=>t.urg&&t.st!=='done').length,ca=tasks.filter(t=>t.cal).length,dn=tasks.filter(t=>t.st==='done').length;
+  document.getElementById('st1').textContent=op;document.getElementById('st2').textContent=ur;document.getElementById('st3').textContent=ca;document.getElementById('st4').textContent=dn;
+  document.getElementById('st2box').style.background=ur>0?'rgba(220,80,60,0.4)':'rgba(255,255,255,0.15)';
+}
+
+function view(v){cv=v;document.getElementById('v-today').classList.toggle('hidden',v!=='today');document.getElementById('v-all').classList.toggle('hidden',v!=='all');document.getElementById('tab1').style.background=v==='today'?'white':'rgba(255,255,255,0.15)';document.getElementById('tab1').style.color=v==='today'?'#8B5E3C':'rgba(255,255,255,0.8)';document.getElementById('tab2').style.background=v==='all'?'white':'rgba(255,255,255,0.15)';document.getElementById('tab2').style.color=v==='all'?'#8B5E3C':'rgba(255,255,255,0.8)';if(v==='all')renderT();}
+
+function buildFilters(){
+  const fs=[{k:'all',l:'All Open'},{k:'urgent',l:'🔴 Urgent'},{k:'calendar',l:'📆 Calendar'},{k:'insurance',l:'🏥 Insurance'},{k:'appointments',l:'📅 Appts'},{k:'school',l:'🎒 School'},{k:'household',l:'🏠 Home'},{k:'admin',l:'📋 Admin'},{k:'selfcare',l:'🌸 Self Care'},{k:'done',l:'✓ Done'}];
+  document.getElementById('frow').innerHTML=fs.map(f=>`<button class="filter-btn${f.k===cf?' active':''}" onclick="setF('${f.k}')">${f.l}</button>`).join('');
+}
+function setF(f){cf=f;buildFilters();renderT();}
+
+function getF(){
+  if(cf==='all')return tasks.filter(t=>t.st!=='done');
+  if(cf==='urgent')return tasks.filter(t=>t.urg&&t.st!=='done');
+  if(cf==='calendar')return tasks.filter(t=>t.cal);
+  if(cf==='done')return tasks.filter(t=>t.st==='done');
+  return tasks.filter(t=>t.cat===cf&&t.st!=='done');
+}
+
+function renderT(){
+  const tl=document.getElementById('tlist'),em=document.getElementById('emp'),ft=getF();
+  if(ft.length===0){tl.innerHTML='';sh('emp');return;}hs('emp');
+  tl.innerHTML=ft.map(t=>{
+    const cat=CATS[t.cat],ov=t.dl&&new Date(t.dl)<new Date(),ex=exp.has(t.id);
+    const so=Object.entries(STL).map(([k,v])=>`<option value="${k}"${k===t.st?' selected':''}>${v}</option>`).join('');
+    const ds=t.cd?`<span style="font-size:10px;color:#4A8A4A;font-family:'DM Sans',sans-serif">📆 ${t.cd}${t.ct&&t.ct!=='All day'?' · '+t.ct:''}</span>`:t.dl?`<span style="font-size:10px;color:${ov?'#C0392B':'#9A7B6A'};font-family:'DM Sans',sans-serif">${ov?'⚠️ ':'📅 '}${new Date(t.dl+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:'';
+    return`<div class="task-card" style="border-left:4px solid ${cat.c}" onclick="togT(${t.id})"><div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:16px;margin-top:2px">${cat.e}</span><div style="flex:1;min-width:0"><div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#3D2B1F;line-height:1.3;margin-bottom:6px">${t.title}</div><div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:6px">${t.urg?'<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:#FDECEA;color:#C0392B">URGENT</span>':''}${t.cal?'<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:#E8F5E8;color:#4A8A4A">📆 CAL</span>':''}</div><div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center"><select style="font-size:10px;padding:2px 7px;border-radius:20px;border:1.5px solid ${STC[t.st]};color:${STC[t.st]};background:white;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer" onclick="event.stopPropagation()" onchange="updSt(${t.id},this.value)">${so}</select>${ds}<span style="font-size:10px;color:#C4A882;font-family:'DM Sans',sans-serif;margin-left:auto">${ex?'▲':'▼'}</span></div>${ex?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid #F5EDE6" onclick="event.stopPropagation()">${t.notes?`<div style="font-size:12px;color:#7A5C44;line-height:1.6;margin-bottom:8px;font-family:'DM Sans',sans-serif;background:#FDF6EE;padding:9px 11px;border-radius:9px">${t.notes}</div>`:''}<div style="display:flex;gap:7px;margin-top:10px">${!t.cal?`<button style="background:#C4956A;color:white;border:none;border-radius:20px;padding:6px 14px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600" onclick="showDraft(${t.id})">✨ Draft for me</button>`:''}<button style="background:#F5EDE6;color:#9A7B6A;border:none;border-radius:20px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="remT(${t.id})">Remove</button></div></div>`:''}
+    </div></div></div>`;
+  }).join('');
+}
+
+function togT(id){if(exp.has(id))exp.delete(id);else exp.add(id);renderT();}
+function updSt(id,s){const t=tasks.find(x=>x.id===id);if(t)t.st=s;updStats();renderT();}
+function remT(id){tasks=tasks.filter(t=>t.id!==id);updStats();renderT();}
+function mkDone(id){const t=tasks.find(x=>x.id===id);if(t)t.st='done';updStats();genBrief();}
+
+function tf(){fc=!fc;document.getElementById('fb').classList.toggle('hidden',fc);document.getElementById('fta').textContent=fc?'▼':'▲';}
+
+async function genBrief(){
+  const today=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const tday=new Date().toLocaleDateString('en-US',{weekday:'short'});
+  const active=tasks.filter(t=>t.st!=='done').slice(0,12);
+  const ts=active.map(t=>`- [${t.cat}] "${t.title}" | urgent:${t.urg} | deadline:${t.dl||'none'} | cal:${t.cd||''} ${t.ct||''}`).join('\n');
+  const iwd=prof.wdays?.includes(tday);
+  const wn=prof.wst==='sahm'?'She is a stay-at-home mom with no fixed work hours.':`She works ${prof.wst||'office'} from ${HRS[prof.ws||9]?.l} to ${HRS[prof.we||17]?.l}. Today ${iwd?'IS':'is NOT'} a work day. ${prof.hcom?`She has a ${prof.cmin||30}-minute commute.`:'No commute.'}`;
+  const pn=prof.ptimes?.length>0?`Preferred pockets: ${prof.ptimes.join(', ')}.`:'';
+  const prompt=`You are Matreo — warm personal chief of staff for mom named ${prof.name||'Mom'}. Today is ${today}.
+Work: ${wn} ${pn}
+Tasks: ${ts}
+Return ONLY valid JSON:
+{"greeting":"Warm 1-sentence morning message. Friend tone.","focus":[{"taskTitle":"exact title","action":"ONE specific concrete action RIGHT NOW","timeEstimate":"2 min","type":"email|call|errand|payment|appointment|school|self"}],"pockets":[{"time":"e.g. 7:30–7:50 AM","duration":"20 min","suggestion":"Warm specific suggestion","type":"task|self|errand"}],"affirmation":"One warm sentence specific to what she carries."}
+Rules: focus=top 4-5 only. pockets=2-3 windows OUTSIDE work hours. Actions hyper-specific. JSON only.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    const txt=d.content?.map(b=>b.text||'').join('')||'{}';
+    const br=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    renderBrief(br);
+  }catch(e){
+    document.getElementById('fg').textContent="You're doing more than you know. Let's make today lighter.";
+    document.getElementById('fl').classList.add('hidden');
+    document.getElementById('fi').innerHTML='<div style="padding:0 0 16px;font-size:13px;color:rgba(255,255,255,0.5)">Tap "All Tasks" to see everything on your plate.</div>';
+    sh('fi');
+  }
+}
+
+function renderBrief(br){
+  document.getElementById('fg').textContent=br.greeting||"Here's what matters most today.";
+  hs('fl');
+  if(br.focus?.length>0){
+    document.getElementById('fi').innerHTML=br.focus.map(item=>{
+      const t=tasks.find(x=>x.title===item.taskTitle||x.title.includes(item.taskTitle?.slice(0,20)));
+      const sd=t&&(item.type==='email'||item.type==='call');
+      return`<div class="focus-item"><div style="display:flex;align-items:flex-start;gap:10px"><div style="font-size:18px;margin-top:1px;flex-shrink:0">${AICONS[item.type]||'✦'}</div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:3px"><div style="font-size:12px;font-weight:700;color:white;font-family:'DM Sans',sans-serif;line-height:1.3">${item.taskTitle}</div><div style="font-size:10px;color:rgba(255,255,255,0.35);font-family:'DM Sans',sans-serif;flex-shrink:0">${item.timeEstimate}</div></div><div style="font-size:12px;color:rgba(255,255,255,0.72);font-family:'DM Sans',sans-serif;line-height:1.5;margin-bottom:9px">${item.action}</div><div style="display:flex;gap:7px;flex-wrap:wrap">${sd?`<button style="background:#C4956A;color:white;border:none;border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700" onclick="showDraft(${t.id})">✨ Draft it</button>`:''} ${t?`<button style="background:rgba(125,170,125,0.3);color:#A8D4A8;border:1px solid rgba(125,170,125,0.3);border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600" onclick="mkDone(${t.id})">Done ✓</button>`:''}</div></div></div></div>`;
+    }).join('');
+    sh('fi');
+  }
+  if(br.pockets?.length>0){
+    document.getElementById('fp').innerHTML=`<div class="pocket-section"><div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:1.5px;margin-bottom:10px">⏱ POCKETS OF TIME TODAY</div>${br.pockets.map((p,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;${i<br.pockets.length-1?'padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)':''}"><div style="font-size:16px;flex-shrink:0">${p.type==='self'?'🌸':p.type==='errand'?'🛍️':'✅'}</div><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.85);font-family:'DM Sans',sans-serif">${p.time}</div><div style="font-size:10px;color:rgba(255,255,255,0.35);font-family:'DM Sans',sans-serif">${p.duration}</div></div><div style="font-size:12px;color:rgba(255,255,255,0.6);font-family:'DM Sans',sans-serif;line-height:1.5;font-style:italic">${p.suggestion}</div></div></div>`).join('')}</div>`;
+    sh('fp');
+  }
+  if(br.affirmation){document.getElementById('fa').innerHTML=`<div style="margin:0 14px 10px;background:rgba(196,149,106,0.15);border-radius:12px;padding:12px 14px;display:flex;gap:9px;align-items:flex-start"><span style="font-size:14px">🌸</span><div style="font-size:12px;color:rgba(255,255,255,0.65);font-family:'Playfair Display',serif;font-style:italic;line-height:1.6">${br.affirmation}</div></div>`;sh('fa');}
+}
+
+function showAdd(){sh('add-modal');}
+function hideAdd(){hs('add-modal');}
+function saveT(){
+  const title=document.getElementById('nt').value.trim();if(!title){alert('Please enter what needs to happen!');return;}
+  tasks.push({id:nid++,cat:document.getElementById('nc').value,st:'todo',title,notes:document.getElementById('nn').value,dl:document.getElementById('nd').value,urg:document.getElementById('nu').checked,cal:false});
+  document.getElementById('nt').value='';document.getElementById('nn').value='';document.getElementById('nd').value='';document.getElementById('nu').checked=false;
+  hideAdd();updStats();if(cv==='all')renderT();
+}
+
+async function showDraft(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  document.getElementById('dt').textContent=t.title;
+  hs('dc');sh('dl');sh('draft-modal');
+  const p=`Warm assistant helping working mom ${prof.name||'Lydia'} draft a follow-up.
+Task: "${t.title}" | Notes: "${t.notes||'none'}"
+Write professional email under 150 words. Subject line. If insurance: mention NY DFS complaint if no response. Sign as "${prof.name||'Lydia'}". Calm, firm.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:p}]})});
+    const d=await r.json();
+    document.getElementById('dc').value=d.content?.map(b=>b.text||'').join('')||'Could not generate.';
+    hs('dl');sh('dc');
+  }catch(e){document.getElementById('dc').value='Could not generate draft. Please try again.';hs('dl');sh('dc');}
+}
+function hideDraft(){hs('draft-modal');}
+function copyD(){navigator.clipboard.writeText(document.getElementById('dc').value);document.getElementById('dcb').textContent='Copied! ✓';setTimeout(()=>document.getElementById('dcb').textContent='Copy to Clipboard',2000);}
+</script>
+</body>
 </html>
